@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - No unreleased changes!
 
+## [0.0.2]
+### Added
+- DotMatrix class for decoding printed puzzle output
+
 ## [0.0.1]
 Initial release.
 
 ### Added
 - Created `AocInput` class with initial helper methods
 
-[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/pacso/aoc_rb_helpers
