@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = Gem::Requirement.new("~> 3.1", ">= 3.1.0")
 
   spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["documentation_uri"] = "https://rubydoc.info/github/pacso/aoc_rb_helpers"
   spec.metadata["changelog_uri"] = "https://github.com/pacso/aoc_rb_helpers/blob/main/CHANGELOG"
 
   spec.files = Dir.chdir(File.expand_path('..', __FILE__)) do
