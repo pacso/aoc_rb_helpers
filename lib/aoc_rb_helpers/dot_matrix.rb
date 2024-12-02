@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Parses and decodes ASCII art text from puzzles. Can output to STDOUT or return the result to your code.
 class DotMatrix
   DICTIONARY = {
     a: [
