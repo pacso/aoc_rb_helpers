@@ -5,3 +5,5 @@ gemspec
 
 gem "rake", "~> 13.0"
 gem "puts_debuggerer"
+gem "yard"
+gem "webrick"
