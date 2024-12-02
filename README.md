@@ -35,6 +35,29 @@ pd some_object
 
 You can read more on how you can use `pd` in their [README](https://github.com/AndyObtiva/puts_debuggerer/blob/master/README.md).
 
+## Provided Helper Classes
+
+All documentation is available here - https://rubydoc.info/github/pacso/aoc_rb_helpers.
+
+The provided helper classes are as follows:
+
+### [AocInput](https://rubydoc.info/github/pacso/aoc_rb_helpers/AocInput)
+Provides input manipulation helper methods. Methods are chainable, and directly modify the parsed view of the input data within the `@data` instance variable.
+
+### [DotMatrix](https://rubydoc.info/github/pacso/aoc_rb_helpers/DotMatrix)
+Parses and decodes ASCII art text from puzzles. Can output to STDOUT or return the result to your code.
+
+Will turn an input like:
+```ruby
+ XX  XXXX X    XXXX X     XX  X   XXXXX  XX   XXX
+X  X X    X    X    X    X  X X   XX    X  X X   
+X    XXX  X    XXX  X    X  X  X X XXX  X    X   
+X    X    X    X    X    X  X   X  X    X     XX 
+X  X X    X    X    X    X  X   X  X    X  X    X
+ XX  X    XXXX XXXX XXXX  XX    X  X     XX  XXX 
+```
+Into the string `CFLELOYFCS`.
+
 ## Examples
 
 Below are some examples of how you can use the features of this gem.
