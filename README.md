@@ -71,3 +71,19 @@ module Year2024
   end
 end
 ```
+
+### Decoding printed text
+
+```ruby
+text_input = <<~EOF
+  X  X XXXX X    X     XX  
+  X  X X    X    X    X  X 
+  XXXX XXX  X    X    X  X 
+  X  X X    X    X    X  X 
+  X  X X    X    X    X  X 
+  X  X XXXX XXXX XXXX  XX  
+EOF
+
+input_array = text_input.lines(chomp: true).map(&:chars)
+DotMatrix.decode(input_array) # returns the string "HELLO"
+```
