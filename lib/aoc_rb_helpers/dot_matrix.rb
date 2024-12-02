@@ -1,127 +1,150 @@
 # frozen_string_literal: true
 
 class DotMatrix
-  CHAR_WIDTH = 5
   DICTIONARY = {
     a: [
-      " XX  ",
-      "X  X ",
-      "X  X ",
-      "XXXX ",
-      "X  X ",
-      "X  X "
+      " XX ",
+      "X  X",
+      "X  X",
+      "XXXX",
+      "X  X",
+      "X  X"
     ],
     b: [
-      "XXX  ",
-      "X  X ",
-      "XXX  ",
-      "X  X ",
-      "X  X ",
-      "XXX  "
+      "XXX ",
+      "X  X",
+      "XXX ",
+      "X  X",
+      "X  X",
+      "XXX "
     ],
     c: [
-      " XX  ",
-      "X  X ",
-      "X    ",
-      "X    ",
-      "X  X ",
-      " XX  "
+      " XX ",
+      "X  X",
+      "X   ",
+      "X   ",
+      "X  X",
+      " XX "
+    ],
+    d: [
+      "XXX ",
+      "X  X",
+      "X  X",
+      "X  X",
+      "X  X",
+      "XXX "
     ],
     e: [
-      "XXXX ",
-      "X    ",
-      "XXX  ",
-      "X    ",
-      "X    ",
-      "XXXX "
+      "XXXX",
+      "X   ",
+      "XXX ",
+      "X   ",
+      "X   ",
+      "XXXX"
     ],
     f: [
-      "XXXX ",
-      "X    ",
-      "XXX  ",
-      "X    ",
-      "X    ",
-      "X    "
+      "XXXX",
+      "X   ",
+      "XXX ",
+      "X   ",
+      "X   ",
+      "X   "
     ],
     g: [
-      " XX  ",
-      "X  X ",
-      "X    ",
-      "X XX ",
-      "X  X ",
-      " XXX "
+      " XX ",
+      "X  X",
+      "X   ",
+      "X XX",
+      "X  X",
+      " XXX"
     ],
     h: [
-      "X  X ",
-      "X  X ",
-      "XXXX ",
-      "X  X ",
-      "X  X ",
-      "X  X ",
+      "X  X",
+      "X  X",
+      "XXXX",
+      "X  X",
+      "X  X",
+      "X  X",
+    ],
+    i: [
+      "XXX",
+      " X ",
+      " X ",
+      " X ",
+      " X ",
+      "XXX"
     ],
     j: [
-      "  XX ",
-      "   X ",
-      "   X ",
-      "   X ",
-      "X  X ",
-      " XX  ",
+      "  XX",
+      "   X",
+      "   X",
+      "   X",
+      "X  X",
+      " XX ",
     ],
     k: [
-      "X  X ",
-      "X X  ",
-      "XX   ",
-      "X X  ",
-      "X X  ",
-      "X  X ",
+      "X  X",
+      "X X ",
+      "XX  ",
+      "X X ",
+      "X X ",
+      "X  X",
     ],
     l: [
-      "X    ",
-      "X    ",
-      "X    ",
-      "X    ",
-      "X    ",
-      "XXXX ",
+      "X   ",
+      "X   ",
+      "X   ",
+      "X   ",
+      "X   ",
+      "XXXX",
     ],
     o: [
-      " XX  ",
-      "X  X ",
-      "X  X ",
-      "X  X ",
-      "X  X ",
-      " XX  "
+      " XX ",
+      "X  X",
+      "X  X",
+      "X  X",
+      "X  X",
+      " XX "
     ],
     p: [
-      "XXX  ",
-      "X  X ",
-      "X  X ",
-      "XXX  ",
-      "X    ",
-      "X    ",
+      "XXX ",
+      "X  X",
+      "X  X",
+      "XXX ",
+      "X   ",
+      "X   ",
     ],
     r: [
-      "XXX  ",
-      "X  X ",
-      "X  X ",
-      "XXX  ",
-      "X X  ",
-      "X  X ",
+      "XXX ",
+      "X  X",
+      "X  X",
+      "XXX ",
+      "X X ",
+      "X  X",
     ],
     s: [
-      " XXX ",
-      "X    ",
-      "X    ",
-      " XX  ",
-      "   X ",
-      "XXX  ",
+      " XXX",
+      "X   ",
+      "X   ",
+      " XX ",
+      "   X",
+      "XXX ",
+    ],
+    t: [
+      "XXX",
+      " X ",
+      " X ",
+      " X ",
+      " X ",
+      " X "
     ],
     u: [
-      "X  X ",
-      "X  X ",
-      "X  X ",
-      "X  X ",
-      "X  X ",
-      " XX  ",
+      "X  X",
+      "X  X",
+      "X  X",
+      "X  X",
+      "X  X",
+      " XX ",
     ],
     y: [
       "X   X",
@@ -132,12 +155,12 @@ class DotMatrix
       "  X  "
     ],
     z: [
-      "XXXX ",
-      "   X ",
-      "  X  ",
-      " X   ",
-      "X    ",
-      "XXXX ",
+      "XXXX",
+      "   X",
+      "  X ",
+      " X  ",
+      "X   ",
+      "XXXX",
     ]
   }
 
@@ -157,6 +180,8 @@ class DotMatrix
     @input = input
     @on = on
     @off = off
+
+    convert_characters
   end
 
   # Prints the input array to STDOUT and returns self.
@@ -178,25 +203,18 @@ class DotMatrix
   # Returns the decoded input.
   # @return [String] the decoded input
   def to_s
-    (0...max_chars).map do |char_index|
+    cursor = 0
+    decoded = ""
+    while cursor < max_cursor
       begin
-        char_map = printable_content.map do |row|
-          row[char_offset(char_index)...char_offset(char_index + 1)].join
+        cursor += 1 while @input.all? { |row| row[cursor] == ' ' }
+        cursor_end = cursor_range(cursor)
+        char_map = @input.map do |row|
+          row[cursor...cursor_end].join
         end
+        cursor = cursor_end
 
-        unless @on == "X" && @off == " "
-          new_map = []
-          char_map.each do |row|
-            row_chars = []
-            row.chars.each do |cell|
-              row_chars.push(cell == @on ? "X" : " ")
-            end
-            new_map.push(row_chars.join)
-          end
-          char_map = new_map
-        end
-
-        DICTIONARY.find { |_, map| map == char_map }[0].to_s.upcase
+        decoded += DICTIONARY.find { |_, map| map == char_map }[0].to_s.upcase
       rescue NoMethodError
         puts "ERROR: Missing character in dictionary:\n\n"
         print(char_map)
@@ -204,31 +222,34 @@ class DotMatrix
         print
         break
       end
-    end.join
+    end
+
+    decoded
   end
 
   private
-  def char_offset(index)
-    index * CHAR_WIDTH
+
+  def convert_characters
+    unless @on == "X" && @off == " "
+      @input = @input.map do |row|
+        row.map do |cell|
+          cell == @on ? "X" : " "
+        end
+      end
+    end
   end
 
-  def printable_range(row)
-    row[first_position..last_position]
+  def cursor_range(cursor)
+    c = cursor
+    c += 1 while @input.any? { |row| row[c] != ' ' } && c - cursor < max_cursor_range
+    c
   end
 
-  def printable_content
-    @input.map { |row| printable_range(row) }
+  def max_cursor
+    @input.first.length - 4
   end
 
-  def first_position
-    @input.map { |row| row.index { |dot| dot != ' ' } }.min
-  end
-
-  def last_position
-    @input.map { |row| row.rindex { |dot| dot != ' ' } }.max + 1
-  end
-
-  def max_chars
-    printable_content.first.length / CHAR_WIDTH
+  def max_cursor_range
+    DICTIONARY.values.map { |v| v.first.length }.max
   end
 end
