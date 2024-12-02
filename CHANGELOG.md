@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - No unreleased changes!
 
+## [0.0.3]
+### Added
+- Characters `I` and `T` now supported by DotMatrix
+- Updated README with links to documentation
+- Added documentation link to gemspec
+
 ## [0.0.2]
 ### Added
 - DotMatrix class for decoding printed puzzle output
