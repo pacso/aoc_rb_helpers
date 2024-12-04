@@ -58,6 +58,14 @@ X  X X    X    X    X    X  X   X  X    X  X    X
 ```
 Into the string `CFLELOYFCS`.
 
+### [Grid](https://rubydoc.info/github/pacso/aoc_rb_helpers/Grid)
+Provides helper methods for manipulating end querying two-dimensional grids.
+
+```ruby
+grid = Grid.new([[0, 1], [2, 3]])
+grid.rotate! # => #<Grid:0x0000ffff8f42f8f8 @grid=[[2, 0], [3, 1]]>
+```
+
 ## Examples
 
 Below are some examples of how you can use the features of this gem.
