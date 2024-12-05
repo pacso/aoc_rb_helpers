@@ -72,7 +72,7 @@ Below are some examples of how you can use the features of this gem.
 
 ### Input manipulation
 
-This example solution for 2024 Day 1 shows how the convenience methdos can be used to format the puzzle input:
+This example solution for 2024 Day 1 shows how the convenience methods can be used to format the puzzle input:
 
 ```ruby
 # frozen_string_literal: true
