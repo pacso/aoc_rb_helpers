@@ -103,6 +103,14 @@ module Year2024
 end
 ```
 
+Where you have different sections of input which need to be handled differently, you can quickly split them into independent instances of `AocInput`, such as with the pussle from 2024, Day 5:
+
+```ruby
+  page_rules, page_updates = aoc_input.sections
+  page_rules_data = page_rules.multiple_lines.columns_of_numbers("|").data
+  page_updates_data = page_updates.multiple_lines.columns_of_numbers(",").data
+```
+
 ### Decoding printed text
 
 ```ruby
