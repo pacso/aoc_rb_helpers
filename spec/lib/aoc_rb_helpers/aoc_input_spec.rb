@@ -18,6 +18,15 @@ RSpec.describe AocInput do
       345 678
     EOF
   end
+  let(:grid_input) do
+    <<~EOF
+      abcde
+      fghij
+      klmno
+      pqrst
+      uvwxy
+    EOF
+  end
 
   describe '#multiple_lines' do
     subject(:method_chain) { described_class.new(multiline_input).multiple_lines }
@@ -68,6 +77,33 @@ RSpec.describe AocInput do
     it "sorts the top level of arrays within data" do
       expect(described_class.new(multiline_numbers).multiple_lines.columns_of_numbers.sort_arrays.data).to eq [[123, 456], [12, 789], [345, 678]]
       expect(described_class.new(multiline_numbers).multiple_lines.columns_of_numbers.transpose.sort_arrays.data).to eq [[123, 345, 789], [12, 456, 678]]
+    end
+  end
+
+  describe "#to_grid" do
+    it "returns an instance of Grid" do
+      expect(described_class.new(grid_input).to_grid).to be_a Grid
+    end
+  end
+
+  describe "sections" do
+    let(:input_with_2_sections) do
+      <<~EOF
+        23|45
+        34|38
+        83|21
+
+        4,3,1,8
+      EOF
+    end
+
+    it "returns two AocInput instances when provided an input with 2 sections" do
+      sections = described_class.new(input_with_2_sections).sections
+      expect(sections).to be_an Array
+      expect(sections.length).to eq 2
+      sections.each do |section|
+        expect(section).to be_an AocInput
+      end
     end
   end
 
