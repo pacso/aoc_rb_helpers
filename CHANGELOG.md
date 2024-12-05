@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - No unreleased changes!
 
+## [0.0.4]
+### Added
+- Grid class for working with two-dimensional arrays of data
+- AocInput updated with convenience method for creating a Grid from input
+- AocInput#sections added, for splitting input into multiple sections
+
 ## [0.0.3]
 ### Added
 - Characters `I` and `T` now supported by DotMatrix
