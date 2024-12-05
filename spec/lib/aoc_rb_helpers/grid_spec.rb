@@ -100,6 +100,39 @@ RSpec.describe Grid do
       expect(grid.subgrids(2, 4))
         .to match_array([row_set_1, row_set_2, row_set_3])
     end
+
+    it "raises ArgumentError if provided non-Integer values" do
+      grid = described_class.from_input(input_text)
+      expect { grid.subgrids("3", 3) }.to raise_error(ArgumentError)
+      expect { grid.subgrids(3, "3") }.to raise_error(ArgumentError)
+    end
+
+    it "raises ArgumentError if zero rows or columns are requested" do
+      grid = described_class.from_input(input_text)
+      expect { grid.subgrids(0, 3) }.to raise_error(ArgumentError)
+      expect { grid.subgrids(3, 0) }.to raise_error(ArgumentError)
+    end
+
+    it "raises ArgumentError if the requested rows or columns exceed the grid size" do
+      grid = described_class.from_input(input_text)
+      expect { grid.subgrids(5, 3) }.to raise_error(ArgumentError)
+      expect { grid.subgrids(3, 5) }.to raise_error(ArgumentError)
+    end
+
+    it "returns a single subgrid matching self if the requested size equals the source grid" do
+      grid = described_class.from_input(input_text)
+      results = grid.subgrids(4, 4)
+      expect(results).to be_an Array
+      expect(results.first).to be_an_instance_of Grid
+      expect(results.first).to eq grid
+    end
+
+    it "returns a new Grid rather than self if the requested size equals the source grid" do
+      grid = described_class.from_input(input_text)
+      subgrid = grid.subgrids(4, 4).first
+      expect(subgrid).to eq grid
+      expect(subgrid).not_to be grid
+    end
   end
 
   describe "#each_subgrid(rows, columns, &block)" do

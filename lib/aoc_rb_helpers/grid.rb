@@ -2,21 +2,21 @@
 
 # Provides helper methods for manipulating end querying two-dimensional grids.
 class Grid
-  # Returns a new Grid initialized with the given input.
+  # Returns a new {Grid} initialized with the given input.
   #
   # @param input [String] the unprocessed input text containing the grid
   def self.from_input(input)
     self.new(input.lines(chomp: true).map(&:chars))
   end
 
-  # Returns a new Grid initialized with the provided two-dimensional array.
+  # Returns a new {Grid} initialized with the provided two-dimensional array.
   #
-  # @param grid [Array<Array<any>>] the grid in a two-dimensional array
+  # @param grid [Array<Array<Object>>] the grid in a two-dimensional array
   def initialize(grid)
     @grid = grid
   end
 
-  # Returns the value stored at coordinates (row, column) within the grid.
+  # Returns the value stored at coordinates +(row, column)+ within the grid.
   #
   # Row and column numbers are zero-indexed.
   #
@@ -26,11 +26,12 @@ class Grid
     @grid[row][column]
   end
 
-  # Updates the cell at coordinates (row, column) with the provided value.
+  # Updates the cell at coordinates +(row, column)+ with the object provided in +value+; returns the given object.
   #
-  # @param row [Integer] the row index of the cell you wish to set
-  # @param column [Integer] the column index of the cell you wish to set
-  # @param value [Any] whatever value you want to set within the selected grid cell
+  # @param row [Integer] the row index of the cell you wish to update
+  # @param column [Integer] the column index of the cell you wish to update
+  # @param value [Object] the object to assign to the selected grid cell
+  # @return [Object] the given +value+
   def set_cell(row, column, value)
     @grid[row][column] = value
   end
@@ -62,8 +63,8 @@ class Grid
     other.all_rotations.any? { |rotated| self == rotated }
   end
 
-  # Returns an array of +Grid+ objects in all possible rotations, copied from +self+.
-  # @return [Array<Grid>] an array containing four +Grid+ objects, one in each possible rotation
+  # Returns an array of {Grid} objects in all possible rotations, copied from +self+.
+  # @return [Array<Grid>] an array containing four {Grid} objects, one in each possible rotation
   def all_rotations
     rotations = []
     current_grid = self.dup
@@ -76,7 +77,7 @@ class Grid
     rotations
   end
 
-  # Returns a new +Grid+ as a copy of self.
+  # Returns a new {Grid} as a copy of self.
   # @return [Grid] a copy of +self+
   def dup
     Grid.new(@grid)
@@ -100,8 +101,8 @@ class Grid
   #
   # @return [Enumerator] if no block is given.
   # @return [self] after processing the provided block
-  # @yield [subgrid] invokes the block
-  # @yieldparam subgrid [Grid] a new +Grid+ object containing a subgrid from the main grid
+  # @yield [subgrid] calls the provided block with each subgrid as a new {Grid} object
+  # @yieldparam subgrid [Grid] a new {Grid} object containing a subgrid from the main grid
   def each_subgrid(rows, columns)
     return to_enum(__callee__, rows, columns) unless block_given?
     @grid.each_cons(rows) do |rows|
@@ -114,8 +115,15 @@ class Grid
   end
 
   # Returns an array containing all of the subgrids of the specified dimensions.
+  # @param rows [Integer] the number of rows each subgrid should contain.
+  #   Must be greater than zero and less than or equal to the number of rows in the grid.
+  # @param columns [Integer] the number of columns each subgrid should contain.
+  #   Must be greater than zero and less than or equal to the number of columns in the grid.
+  # @raise [ArgumentError] if the specified rows or columns are not {Integer} values, or exceed the grid's dimensions.
   # @return [Array<Grid>]
   def subgrids(rows, columns)
+    raise ArgumentError unless rows.is_a?(Integer) && rows > 0 && rows <= @grid.length
+    raise ArgumentError unless columns.is_a?(Integer) && columns > 0 && columns <= @grid.first.length
     each_subgrid(rows, columns).to_a
   end
 end
