@@ -58,13 +58,21 @@ X  X X    X    X    X    X  X   X  X    X  X    X
 ```
 Into the string `CFLELOYFCS`.
 
+### [Grid](https://rubydoc.info/github/pacso/aoc_rb_helpers/Grid)
+Provides helper methods for manipulating end querying two-dimensional grids.
+
+```ruby
+grid = Grid.new([[0, 1], [2, 3]])
+grid.rotate! # => #<Grid:0x0000ffff8f42f8f8 @grid=[[2, 0], [3, 1]]>
+```
+
 ## Examples
 
 Below are some examples of how you can use the features of this gem.
 
 ### Input manipulation
 
-This example solution for 2024 Day 1 shows how the convenience methdos can be used to format the puzzle input:
+This example solution for 2024 Day 1 shows how the convenience methods can be used to format the puzzle input:
 
 ```ruby
 # frozen_string_literal: true
@@ -93,6 +101,14 @@ module Year2024
     end
   end
 end
+```
+
+Where you have different sections of input which need to be handled differently, you can quickly split them into independent instances of `AocInput`, such as with the pussle from 2024, Day 5:
+
+```ruby
+  page_rules, page_updates = aoc_input.sections
+  page_rules_data = page_rules.multiple_lines.columns_of_numbers("|").data
+  page_updates_data = page_updates.multiple_lines.columns_of_numbers(",").data
 ```
 
 ### Decoding printed text
