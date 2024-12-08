@@ -215,4 +215,26 @@ RSpec.describe Grid do
       end
     end
   end
+
+  describe "#dup" do
+    let(:grid) { described_class.new([[0, 1], [2, 3]]) }
+
+    it "returns a new Grid instance" do
+      expect(grid.dup).to be_an_instance_of Grid
+    end
+
+    it "returns a new Grid with a matching @grid" do
+      expect(grid.dup.instance_variable_get(:@grid)).to eq grid.instance_variable_get(:@grid)
+    end
+
+    it "does not create a Grid with the same instance of @grid" do
+      expect(grid.dup.instance_variable_get(:@grid)).not_to be grid.instance_variable_get(:@grid)
+    end
+
+    it "isolates changes in the new grid from the original" do
+      other = grid.dup
+      expect { other.set_cell(0, 0, "9") }.not_to change { grid.cell(0, 0) }.from(0)
+      expect(other.cell(0, 0)).to eq "9"
+    end
+  end
 end

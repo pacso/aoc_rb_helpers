@@ -112,7 +112,7 @@ class Grid
   # Returns a new {Grid} as a copy of self.
   # @return [Grid] a copy of +self+
   def dup
-    Grid.new(@grid)
+    self.class.new(@grid.map { |row| row.map { |cell| cell } })
   end
 
   # Updates +self+ with a rotated grid and returns +self+.
