@@ -16,6 +16,27 @@ class Grid
     @grid = grid
   end
 
+  # Returns +true+ if the provided coordinates exceed the bounds of the grid; +false+ otherwise.
+  #
+  # @param row [Integer] the row index to test
+  # @param column [Integer] the column index to test
+  # @return [Boolean]
+  # @see #includes_coords?
+  def beyond_grid?(row, column)
+    !includes_coords?(row, column)
+  end
+
+  # Returns +true+ if the provided coordinates exist within the bounds of the grid; +false+ otherwise.
+  #
+  # @param row [Integer] the row index to test
+  # @param column [Integer] the column index to test
+  # @return [Boolean]
+  # @see #beyond_grid?
+  def includes_coords?(row, column)
+    row >= 0 && column >= 0 && row < @grid.length && column < @grid.first.length
+  end
+  alias_method(:within_grid?, :includes_coords?)
+
   # Returns the value stored at coordinates +(row, column)+ within the grid.
   #
   # Row and column numbers are zero-indexed.
