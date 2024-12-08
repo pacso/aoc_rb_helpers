@@ -188,13 +188,13 @@ RSpec.describe Grid do
     let(:grid) { described_class.new([[0, 1], [2, 3]]) }
 
     it "returns true if the given row and column are in the grid" do
-      [[0,0], [0,1], [1,0], [1,1]].each do |coords|
+      [[0, 0], [0, 1], [1, 0], [1, 1]].each do |coords|
         expect(grid.includes_coords?(*coords)).to be true
       end
     end
 
     it "returns false if the given row and column are not in the grid" do
-      [[-1,0], [0,-1], [0,2], [2,0]].each do |coords|
+      [[-1, 0], [0, -1], [0, 2], [2, 0]].each do |coords|
         expect(grid.includes_coords?(*coords)).to be false
       end
     end
@@ -204,13 +204,13 @@ RSpec.describe Grid do
     let(:grid) { described_class.new([[0, 1], [2, 3]]) }
 
     it "returns false if the given row and column are in the grid" do
-      [[0,0], [0,1], [1,0], [1,1]].each do |coords|
+      [[0, 0], [0, 1], [1, 0], [1, 1]].each do |coords|
         expect(grid.beyond_grid?(*coords)).to be false
       end
     end
 
     it "returns true if the given row and column are not in the grid" do
-      [[-1,0], [0,-1], [0,2], [2,0]].each do |coords|
+      [[-1, 0], [0, -1], [0, 2], [2, 0]].each do |coords|
         expect(grid.beyond_grid?(*coords)).to be true
       end
     end
