@@ -237,4 +237,73 @@ RSpec.describe Grid do
       expect(other.cell(0, 0)).to eq "9"
     end
   end
+
+  describe "#locate" do
+    let(:grid) { described_class.new([%w[a b], %w[c d]]) }
+
+    it "returns the coordinates of the given value" do
+      expect(grid.locate("a")).to eq [0, 0]
+      expect(grid.locate("b")).to eq [0, 1]
+      expect(grid.locate("c")).to eq [1, 0]
+      expect(grid.locate("d")).to eq [1, 1]
+    end
+
+    it "returns nil if the given value is not in the grid" do
+      expect(grid.locate("missing")).to be_nil
+    end
+
+    context "with a grid contining duplicate values" do
+      let(:grid) { described_class.new([%w[a b], %w[b a]]) }
+
+      it "returns the first coordinate of the given value, searching from the top-left by row" do
+        expect(grid.locate("a")).to eq [0, 0]
+        expect(grid.locate("b")).to eq [0, 1]
+      end
+    end
+  end
+
+  describe "#locate_all" do
+    let(:grid) { described_class.new([%w[a b c a], %w[c d e b], %w[f a g h]]) }
+
+    it "returns all coordinates of the given value" do
+      expect(grid.locate_all("a")).to eq [[0, 0], [0, 3], [2, 1]]
+    end
+
+    it "returns an empty array if the given value is not in the grid" do
+      expect(grid.locate_all("missing")).to eq []
+    end
+  end
+
+  describe "#each_cell" do
+    let(:grid) { described_class.new([%w[a b], %w[c d]]) }
+
+    it "returns an enumerator when no block is given" do
+      e = grid.each_cell
+      expect(e).to be_an Enumerator
+      expect(e.next).to eq [[0, 0], "a"]
+    end
+
+    it "allows the grid to be modified during iteration" do
+      grid.each_cell { |coords, value| grid.set_cell(*coords, value * 2) }
+      expect(grid.cell(0, 0)).to eq "aa"
+    end
+
+    it "returns self when given a block" do
+      expect(grid.each_cell { |_, value| value * 2 }).to eq grid
+    end
+
+    it "yields the coordinates and values of each cell in the grid" do
+      expected_values = [
+        [[0, 0], "a"],
+        [[0, 1], "b"],
+        [[1, 0], "c"],
+        [[1, 1], "d"],
+      ]
+      returned_values = []
+      grid.each_cell do |coords, value|
+        returned_values << [coords, value]
+      end
+      expect(returned_values).to eq expected_values
+    end
+  end
 end

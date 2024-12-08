@@ -158,4 +158,109 @@ class Grid
     raise ArgumentError unless columns.is_a?(Integer) && columns > 0 && columns <= @grid.first.length
     each_subgrid(rows, columns).to_a
   end
+
+  # Returns the first coordinates within the grid containing the given value. Returns +nil+ if not found.
+  #
+  # If given an array of values, the first coordinate matching any of the given values will be returned.
+  #
+  # Searches the grid from top left (+[0, 0]+) to bottom right, by scanning each row.
+  #
+  # @param value [Object, Array<Object>] the value, or array of values, to search for.
+  # @return [Array<Integer>] if the value was located, its coordinates are returned in a 2-item array where:
+  #   - The first item is the row index.
+  #   - The second item is the column index.
+  # @return [nil] if the value was not located
+  def locate(value)
+    result = nil
+    if value.is_a? Array
+      value.each do |e|
+        result = locate(e)
+        break unless result.nil?
+      end
+    else
+      result = locate_value value
+    end
+    result
+  end
+
+  # Returns an array of coordinates for any location within the grid containing the given value.
+  #
+  # If given an array of values, the coordinates of any cell matching any of the given values will be returned.
+  #
+  # @param value [Object, Array<Object>] the value, or array of values, to search for.
+  # @return [Array<Array<Integer>>] an array of coordinates. Each coordinate is a 2-item array where:
+  #   - The first item is the row index.
+  #   - The second item is the column index.
+  def locate_all(value)
+    locations = []
+
+    if value.is_a? Array
+      @grid.each_with_index.select { |row, _r_index| value.any? { |el| row.include?(el) } }.each do |row, r_index|
+        row.each_with_index do |cell, c_index|
+          locations << [r_index, c_index] if value.include?(cell)
+        end
+      end
+    else
+      @grid.each_with_index.select { |row, _r_index| row.include?(value) }.each do |row, r_index|
+        row.each_with_index do |cell, c_index|
+          locations << [r_index, c_index] if cell == value
+        end
+      end
+    end
+
+    locations
+  end
+
+  # Iterates over each cell in the grid.
+  #
+  # When a block is given, passes the coordinates and value of each cell to the block; returns +self+:
+  #     g = Grid.new([
+  #           ["a", "b"],
+  #           ["c", "d"]
+  #         ])
+  #     g.each_cell { |coords, value| puts "#{coords.inspect} => #{value}" }
+  #
+  # Output:
+  #     [0, 0] => a
+  #     [0, 1] => b
+  #     [1, 0] => c
+  #     [1, 1] => d
+  #
+  # When no block is given, returns a new Enumerator:
+  #     g = Grid.new([
+  #           [:a, "b"],
+  #           [3, true]
+  #         ])
+  #     e = g.each_cell
+  #     e # => #<Enumerator: #<Grid: @grid=[[\"a\", \"b\"], [\"c\", \"d\"]]>:each_cell>
+  #     g1 = e.each { |coords, value| puts "#{coords.inspect} => #{value.class}: #{value}" }
+  #
+  # Output:
+  #     [0, 0] => Symbol: a
+  #     [0, 1] => String: b
+  #     [1, 0] => Integer: 3
+  #     [1, 1] => TrueClass: true
+  # @yieldparam coords [Array<Integer>] the coordinates of the cell in a 2-item array where:
+  #   #   - The first item is the row index.
+  #   #   - The second item is the column index.
+  # @yieldparam value [Object] the value stored within the cell
+  # @return [self]
+  def each_cell
+    return to_enum(__callee__) unless block_given?
+    @grid.each_with_index do |row, r_index|
+      row.each_with_index do |cell, c_index|
+        yield [[r_index, c_index], cell]
+      end
+    end
+    self
+  end
+
+  private
+
+  def locate_value(element)
+    row = @grid.index { |row| row.include?(element) }
+    return nil if row.nil?
+    column = @grid[row].index(element)
+    [row, column]
+  end
 end
