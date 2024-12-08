@@ -21,17 +21,31 @@ RSpec.describe Grid do
   end
 
   describe "#cell(y, x)" do
+    let(:grid) { described_class.from_input(input_text) }
+
     it "returns the cell at the given coordinates" do
-      grid = described_class.from_input(input_text)
       expect(grid.cell(0, 0)).to eq "a"
+    end
+
+    it "returns nil if the coords are out of bounds" do
+      expect(grid.cell(-1, -1)).to be_nil
     end
   end
 
   describe "#set_cell(y, x, value)" do
+    let(:grid) { described_class.from_input(input_text) }
+
     it "sets the cell at the given coordinates" do
-      grid = described_class.from_input(input_text)
-      grid.set_cell(0, 0, "z")
-      expect(grid.cell(0, 0)).to eq "z"
+      expect { grid.set_cell(0, 0, "z") }
+        .to change { grid.cell(0, 0) }.from("a").to("z")
+    end
+
+    it "returns nil if the coordinates are out of bounds" do
+      expect(grid.set_cell(-1, 0, "z")).to be_nil
+    end
+
+    it "does not modify the grid if the coordinates are out of bounds" do
+      expect { grid.set_cell(-1, 0, "z") }.not_to change { grid.instance_variable_get("@grid") }
     end
   end
 
@@ -167,6 +181,129 @@ RSpec.describe Grid do
       grid = described_class.new([[2, 0], [3, 1]])
       grid.rotate!(:anticlockwise)
       expect(grid).to eq Grid.new([[0, 1], [2, 3]])
+    end
+  end
+
+  describe "#includes_coords?(row, column)" do
+    let(:grid) { described_class.new([[0, 1], [2, 3]]) }
+
+    it "returns true if the given row and column are in the grid" do
+      [[0, 0], [0, 1], [1, 0], [1, 1]].each do |coords|
+        expect(grid.includes_coords?(*coords)).to be true
+      end
+    end
+
+    it "returns false if the given row and column are not in the grid" do
+      [[-1, 0], [0, -1], [0, 2], [2, 0]].each do |coords|
+        expect(grid.includes_coords?(*coords)).to be false
+      end
+    end
+  end
+
+  describe "#beyond_grid?(row, column)" do
+    let(:grid) { described_class.new([[0, 1], [2, 3]]) }
+
+    it "returns false if the given row and column are in the grid" do
+      [[0, 0], [0, 1], [1, 0], [1, 1]].each do |coords|
+        expect(grid.beyond_grid?(*coords)).to be false
+      end
+    end
+
+    it "returns true if the given row and column are not in the grid" do
+      [[-1, 0], [0, -1], [0, 2], [2, 0]].each do |coords|
+        expect(grid.beyond_grid?(*coords)).to be true
+      end
+    end
+  end
+
+  describe "#dup" do
+    let(:grid) { described_class.new([[0, 1], [2, 3]]) }
+
+    it "returns a new Grid instance" do
+      expect(grid.dup).to be_an_instance_of Grid
+    end
+
+    it "returns a new Grid with a matching @grid" do
+      expect(grid.dup.instance_variable_get(:@grid)).to eq grid.instance_variable_get(:@grid)
+    end
+
+    it "does not create a Grid with the same instance of @grid" do
+      expect(grid.dup.instance_variable_get(:@grid)).not_to be grid.instance_variable_get(:@grid)
+    end
+
+    it "isolates changes in the new grid from the original" do
+      other = grid.dup
+      expect { other.set_cell(0, 0, "9") }.not_to change { grid.cell(0, 0) }.from(0)
+      expect(other.cell(0, 0)).to eq "9"
+    end
+  end
+
+  describe "#locate" do
+    let(:grid) { described_class.new([%w[a b], %w[c d]]) }
+
+    it "returns the coordinates of the given value" do
+      expect(grid.locate("a")).to eq [0, 0]
+      expect(grid.locate("b")).to eq [0, 1]
+      expect(grid.locate("c")).to eq [1, 0]
+      expect(grid.locate("d")).to eq [1, 1]
+    end
+
+    it "returns nil if the given value is not in the grid" do
+      expect(grid.locate("missing")).to be_nil
+    end
+
+    context "with a grid contining duplicate values" do
+      let(:grid) { described_class.new([%w[a b], %w[b a]]) }
+
+      it "returns the first coordinate of the given value, searching from the top-left by row" do
+        expect(grid.locate("a")).to eq [0, 0]
+        expect(grid.locate("b")).to eq [0, 1]
+      end
+    end
+  end
+
+  describe "#locate_all" do
+    let(:grid) { described_class.new([%w[a b c a], %w[c d e b], %w[f a g h]]) }
+
+    it "returns all coordinates of the given value" do
+      expect(grid.locate_all("a")).to eq [[0, 0], [0, 3], [2, 1]]
+    end
+
+    it "returns an empty array if the given value is not in the grid" do
+      expect(grid.locate_all("missing")).to eq []
+    end
+  end
+
+  describe "#each_cell" do
+    let(:grid) { described_class.new([%w[a b], %w[c d]]) }
+
+    it "returns an enumerator when no block is given" do
+      e = grid.each_cell
+      expect(e).to be_an Enumerator
+      expect(e.next).to eq [[0, 0], "a"]
+    end
+
+    it "allows the grid to be modified during iteration" do
+      grid.each_cell { |coords, value| grid.set_cell(*coords, value * 2) }
+      expect(grid.cell(0, 0)).to eq "aa"
+    end
+
+    it "returns self when given a block" do
+      expect(grid.each_cell { |_, value| value * 2 }).to eq grid
+    end
+
+    it "yields the coordinates and values of each cell in the grid" do
+      expected_values = [
+        [[0, 0], "a"],
+        [[0, 1], "b"],
+        [[1, 0], "c"],
+        [[1, 1], "d"],
+      ]
+      returned_values = []
+      grid.each_cell do |coords, value|
+        returned_values << [coords, value]
+      end
+      expect(returned_values).to eq expected_values
     end
   end
 end

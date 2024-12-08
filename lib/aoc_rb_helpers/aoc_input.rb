@@ -36,6 +36,26 @@ class AocInput
     self
   end
 
+  # Processes each line of the data using the provided block.
+  #
+  # This method applies the given block to each line in the +@data+ array,
+  # replacing the original +@data+ with the results of the block. The method
+  # returns +self+ to allow method chaining.
+  #
+  # Returns an enumerator if no block is given.
+  #
+  # @yieldparam line [Object, Array<Object>] a single line of the data being processed
+  # @yieldreturn [Object, Array<Object>] the result of processing the line
+  # @return [self] the instance itself, for method chaining
+  # @return [Enumerator] if no block is given
+  def process_each_line
+    return to_enum(__callee__) unless block_given?
+    @data = @data.map do |line|
+      yield line
+    end
+    self
+  end
+
   # Splits each string in the data array into an array of numbers.
   #
   # This method processes +@data+ by splitting each string in the array using the specified delimiter,

@@ -86,7 +86,7 @@ RSpec.describe AocInput do
     end
   end
 
-  describe "sections" do
+  describe "#sections" do
     let(:input_with_2_sections) do
       <<~EOF
         23|45
@@ -104,6 +104,39 @@ RSpec.describe AocInput do
       sections.each do |section|
         expect(section).to be_an AocInput
       end
+    end
+  end
+
+  describe "#process_each_line" do
+    let(:multi_type_row_input) do
+      <<~EOF
+        abc: 123
+        def: 456
+        ghi: 789
+      EOF
+    end
+    subject(:processed_input) {
+      described_class
+        .new(multi_type_row_input)
+        .multiple_lines
+        .process_each_line do |line|
+        key, value = line.split(": ")
+        [key, value.to_i]
+      end
+    }
+
+    it "returns an instance of AocInput" do
+      expect(processed_input).to be_an AocInput
+    end
+
+    it "modifies @data correctly" do
+      expect(processed_input.data).to eq [["abc", 123], ["def", 456], ["ghi", 789]]
+    end
+
+    it "returns an enumerator if no block is given" do
+      enumerator = described_class.new(multi_type_row_input).multiple_lines.process_each_line
+      expect(enumerator).to be_an Enumerator
+      expect(enumerator.next).to eq "abc: 123"
     end
   end
 

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - No unreleased changes!
 
+## [0.0.5]
+### Added
+- AocInput#process_each_line - Processes each line of the input data using the provided block
+- Grid#includes_coords? - Returns `true` if the provided coordinates exist within the bounds of the grid
+- Grid#beyond_grid? - Returns `true` if the provided coordinates exceed the bounds of the grid
+- Grid#locate(value) - Returns the first coordinates within the grid containing the given value
+- Grid#locate_all(value) - Returns an array of coordinates for any location within the grid containing the given value
+- Grid#each_cell - Iterates over each cell in the grid
+
+### Changed
+- Grid#cell now returns `nil` if the provided coordinates to not exist within the grid
+- Grid#set_cell nwo returns `nil` if the provided coordinates to not exist within the grid
+
+### Fixed
+- Grid#dup previously returned a new `Grid` instance with the same instance of the `@grid` array within it. Now `@grid` is a unique copy.
+
 ## [0.0.4]
 ### Added
 - Grid class for working with two-dimensional arrays of data
@@ -29,6 +45,9 @@ Initial release.
 ### Added
 - Created `AocInput` class with initial helper methods
 
-[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.4...v0.0.5
+[0.0.4]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.3...v0.0.4
+[0.0.3]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/pacso/aoc_rb_helpers
