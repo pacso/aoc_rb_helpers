@@ -21,17 +21,31 @@ RSpec.describe Grid do
   end
 
   describe "#cell(y, x)" do
+    let(:grid) { described_class.from_input(input_text) }
+
     it "returns the cell at the given coordinates" do
-      grid = described_class.from_input(input_text)
       expect(grid.cell(0, 0)).to eq "a"
+    end
+
+    it "returns nil if the coords are out of bounds" do
+      expect(grid.cell(-1, -1)).to be_nil
     end
   end
 
   describe "#set_cell(y, x, value)" do
+    let(:grid) { described_class.from_input(input_text) }
+
     it "sets the cell at the given coordinates" do
-      grid = described_class.from_input(input_text)
-      grid.set_cell(0, 0, "z")
-      expect(grid.cell(0, 0)).to eq "z"
+      expect { grid.set_cell(0, 0, "z") }
+        .to change { grid.cell(0, 0) }.from("a").to("z")
+    end
+
+    it "returns nil if the coordinates are out of bounds" do
+      expect(grid.set_cell(-1, 0, "z")).to be_nil
+    end
+
+    it "does not modify the grid if the coordinates are out of bounds" do
+      expect { grid.set_cell(-1, 0, "z") }.not_to change { grid.instance_variable_get("@grid") }
     end
   end
 

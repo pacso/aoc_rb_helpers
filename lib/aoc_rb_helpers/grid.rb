@@ -39,21 +39,32 @@ class Grid
 
   # Returns the value stored at coordinates +(row, column)+ within the grid.
   #
+  # Returns +nil+ if the provided coordinates do not exist within the grid.
+  #
   # Row and column numbers are zero-indexed.
   #
   # @param row [Integer] the row index of the desired cell
   # @param column [Integer] the column index of the desired cell
+  # @return [Object] the value at the given coordinates within the grid
+  # @return [nil] if the given coordinates do not exist within the grid
+  # @see #set_cell
   def cell(row, column)
+    return nil unless includes_coords?(row, column)
     @grid[row][column]
   end
 
   # Updates the cell at coordinates +(row, column)+ with the object provided in +value+; returns the given object.
   #
+  # Returns +nil+ if the provided coordinates do not exist within the grid.
+  #
   # @param row [Integer] the row index of the cell you wish to update
   # @param column [Integer] the column index of the cell you wish to update
   # @param value [Object] the object to assign to the selected grid cell
   # @return [Object] the given +value+
+  # @return [nil] if the provided coordinates do not exist within the grid
+  # @see #cell
   def set_cell(row, column, value)
+    return nil unless includes_coords?(row, column)
     @grid[row][column] = value
   end
 
