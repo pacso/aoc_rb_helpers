@@ -43,7 +43,7 @@ RSpec.describe AocInput do
     end
 
     it "strips a single newline character" do
-      aoc_input = described_class.new(single_line_input)
+      aoc_input = described_class.new(single_newline_input)
       expect { aoc_input.single_line }.to change { aoc_input.data }
                                             .from("the-only-line\n")
                                             .to("the-only-line")
