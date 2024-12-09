@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - No unreleased changes!
 
+## [0.0.6]
+### Added
+- AocInput#single_line - Strips newline characters from single line puzzle inputs
+
 ## [0.0.5]
 ### Added
 - AocInput#process_each_line - Processes each line of the input data using the provided block
@@ -45,7 +49,8 @@ Initial release.
 ### Added
 - Created `AocInput` class with initial helper methods
 
-[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.2...v0.0.3
