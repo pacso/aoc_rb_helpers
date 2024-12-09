@@ -28,6 +28,40 @@ RSpec.describe AocInput do
     EOF
   end
 
+  describe "#single_line" do
+    let(:single_newline_input) do
+      <<~EOF
+        the-only-line
+      EOF
+    end
+    let(:multi_newline_input) do
+      <<~EOF
+        the-only-line
+
+
+      EOF
+    end
+
+    it "strips a single newline character" do
+      aoc_input = described_class.new(single_line_input)
+      expect { aoc_input.single_line }.to change { aoc_input.data }
+                                            .from("the-only-line\n")
+                                            .to("the-only-line")
+    end
+
+    it "strips multiple newline characters" do
+      aoc_input = described_class.new(multi_newline_input)
+      expect { aoc_input.single_line }.to change { aoc_input.data }
+                                            .from("the-only-line\n\n\n")
+                                            .to("the-only-line")
+    end
+
+    it "returns the aoc_input instance" do
+      aoc_input = described_class.new(multi_newline_input)
+      expect(aoc_input.single_line).to be aoc_input
+    end
+  end
+
   describe '#multiple_lines' do
     subject(:method_chain) { described_class.new(multiline_input).multiple_lines }
 

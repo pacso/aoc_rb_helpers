@@ -22,6 +22,17 @@ class AocInput
     @data ||= @raw_input
   end
 
+  # Strips newline characters from the data, leaving a single line of input.
+  #
+  # @return [AocInput] self
+  def single_line
+    can_call?(:single_line)
+    @data = data.chomp('')
+    revoke(:multiple_lines)
+    revoke(:single_line)
+    self
+  end
+
   # Splits the input string into an array of lines.
   #
   # This method processes +@data+ by splitting the input string into multiple lines,
@@ -30,9 +41,12 @@ class AocInput
   #
   # @return [AocInput] self
   def multiple_lines
+    can_call?(:multiple_lines)
     @data = data.lines(chomp: true)
     allow(:columns_of_numbers)
+    allow(:process_each_line)
     revoke(:multiple_lines)
+    revoke(:single_line)
     self
   end
 
@@ -49,6 +63,7 @@ class AocInput
   # @return [self] the instance itself, for method chaining
   # @return [Enumerator] if no block is given
   def process_each_line
+    can_call?(:process_each_line, "call .multiple_lines first")
     return to_enum(__callee__) unless block_given?
     @data = @data.map do |line|
       yield line
@@ -118,6 +133,8 @@ class AocInput
     @can_call = {
       columns_of_numbers: false,
       multiple_lines: true,
+      process_each_line: false,
+      single_line: true,
       sort_arrays: false,
       transpose: false
     }
