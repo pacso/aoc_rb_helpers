@@ -306,4 +306,43 @@ RSpec.describe Grid do
       expect(returned_values).to eq expected_values
     end
   end
+
+  describe "#neighbours" do
+    let(:grid) { described_class.new([
+                                       [7, 4, 2, 4, 7],
+                                       [4, 2, 1, 2, 4],
+                                       [2, 1, 0, 1, 2],
+                                       [4, 2, 1, 2, 4],
+                                       [7, 4, 2, 4, 7]
+                                     ]) }
+
+    it "returns the surrounding neighbour coords when no block is given" do
+      expect(grid.neighbours(*[2, 2])).to eq [[1, 2], [2, 3], [3, 2], [2, 1]]
+    end
+
+    it "returns diagonal neighbour coords when requested" do
+      expect(grid.neighbours(*[2, 2], ordinal: true)).to eq [[1, 2], [1, 3], [2, 3], [3, 3], [3, 2], [3, 1], [2, 1], [1, 1]]
+    end
+
+    it "returns only diagonal neighbours when requested" do
+      expect(grid.neighbours(*[2, 2], cardinal: false, ordinal: true)).to eq [[1, 3], [3, 3], [3, 1], [1, 1]]
+    end
+
+    it "excludes coordinates outside the grid" do
+      expect(grid.neighbours(*[0,0])).to eq [[0, 1], [1, 0]]
+      expect(grid.neighbours(*[1,0])).to eq [[0, 0], [1, 1], [2, 0]]
+      expect(grid.neighbours(*[0,1])).to eq [[0, 2], [1, 1], [0, 0]]
+    end
+
+    it "accepts a block to filter neighbours based on each cell value" do
+      expect(grid.neighbours(*[1, 1]) { true }).to eq [[0, 1], [1, 2], [2, 1], [1, 0]]
+      expect(grid.neighbours(*[1, 1]) { |cell| cell.even? }).to eq [[0, 1], [1, 0]]
+      expect(grid.neighbours(*[1, 1]) { |cell| cell.odd? }).to eq [[1, 2], [2, 1]]
+      expect(grid.neighbours(*[1, 1]) { false }).to eq []
+    end
+
+    it "filters diagonal neighbours also" do
+      expect(grid.neighbours(*[1, 1], ordinal: true) { |cell| cell.even? }).to eq [[0, 1], [0, 2], [2, 2], [2, 0], [1, 0]]
+    end
+  end
 end

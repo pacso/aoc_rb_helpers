@@ -35,6 +35,7 @@ class Grid
   def includes_coords?(row, column)
     row >= 0 && column >= 0 && row < @grid.length && column < @grid.first.length
   end
+
   alias_method(:within_grid?, :includes_coords?)
 
   # Returns the value stored at coordinates +(row, column)+ within the grid.
@@ -99,11 +100,11 @@ class Grid
   # @return [Array<Grid>] an array containing four {Grid} objects, one in each possible rotation
   def all_rotations
     rotations = []
-    current_grid = self.dup
+    grid = self.dup
 
     4.times do
-      rotations << current_grid.dup
-      current_grid.rotate!
+      rotations << grid.dup
+      grid.rotate!
     end
 
     rotations
@@ -112,7 +113,7 @@ class Grid
   # Returns a new {Grid} as a copy of self.
   # @return [Grid] a copy of +self+
   def dup
-    self.class.new(@grid.map { |row| row.map { |cell| cell } })
+    self.class.new Marshal.load(Marshal.dump(@grid))
   end
 
   # Updates +self+ with a rotated grid and returns +self+.
@@ -131,8 +132,8 @@ class Grid
   #
   # Returns an enumerator if no block is given
   #
+  # @return [Grid] if given a block, returns +self+ after calling block for each subgrid
   # @return [Enumerator] if no block is given.
-  # @return [self] after processing the provided block
   # @yield [subgrid] calls the provided block with each subgrid as a new {Grid} object
   # @yieldparam subgrid [Grid] a new {Grid} object containing a subgrid from the main grid
   def each_subgrid(rows, columns)
@@ -244,7 +245,8 @@ class Grid
   #   #   - The first item is the row index.
   #   #   - The second item is the column index.
   # @yieldparam value [Object] the value stored within the cell
-  # @return [self]
+  # @return [Grid] if given a block, returns +self+ after calling block for each cell
+  # @return [Enumerator] if no block is given
   def each_cell
     return to_enum(__callee__) unless block_given?
     @grid.each_with_index do |row, r_index|
@@ -253,6 +255,79 @@ class Grid
       end
     end
     self
+  end
+
+  # Calls the block, if given, with each cell value; replaces the cell in the grid with the block's return value:
+  #
+  # Returns a new Enumerator if no block given
+  # @yieldparam value [Object] the value stored within the cell
+  # @yieldreturn new_value [Object] the updated value to replace cell with
+  # @return [Grid] if given a block, returns +self+ after calling block for each cell
+  # @return [Enumerator] if no block is given
+  def each_cell!
+    return to_enum(__callee__) unless block_given?
+    @grid.each_with_index do |row, r_index|
+      row.each_with_index do |cell, c_index|
+        @grid[r_index][c_index] = yield cell
+      end
+    end
+    self
+  end
+  alias_method :format_cells, :each_cell!
+
+  # For the given position indicated by the +row+ and +column+ provided, returns
+  # an array of coordinates which are direct neighbours. The returned coordinates are in
+  # clockwise order starting directly above the given cell:
+  #     g = Grid.new([
+  #           [0, 1, 2, 3],
+  #           [4, 5, 6, 7],
+  #           [8, 9, 10, 11]
+  #         ])
+  #     g.neighbours(1, 1) # => [[0, 1], [1, 2], [2, 1], [1, 0]]
+  #
+  # If the keyword argument +allow_diagonal: true+ is provided, diagonally accessible neighbours will also be included:
+  #     g = Grid.new([
+  #           [0, 1, 2, 3],
+  #           [4, 5, 6, 7],
+  #           [8, 9, 10, 11]
+  #         ])
+  #     g.neighbours(1, 1) # => [[0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [1, 0], [0, 0]]
+  #
+  # If provided a block, each neighbour's cell value is yielded to the block, and only those neighbours for which the block
+  # returns a truthy value will be returned in the results:
+  #     g = Grid.new([
+  #           [0, 1, 2, 3],
+  #           [4, 5, 6, 7],
+  #           [8, 9, 10, 11]
+  #         ])
+  #     g.neighbours(1, 2) { |cell| cell.even? } # => [[0, 2], [2, 2]]
+  #     g.neighbours(1, 2, allow_diagonal: true) { |cell| cell <= 5 } # => [[0, 2], [0, 3], [1, 1], [0, 1]]
+  #
+  # @param row [Integer] the row index of the starting cell
+  # @param column [Integer] the column index of the starting cell
+  # @param cardinal [Boolean] permits the direct north/east/south/west directions
+  # @param ordinal [Boolean] permits diagonal north-east/south-east/south-west/north-west directions
+  # @return [Array<Array<Integer>>] an array of coordinates. Each coordinate is a 2-item array where:
+  #   - The first item is the row index.
+  #   - The second item is the column index.
+  def neighbours(row, column, cardinal: true, ordinal: false)
+    possible_neighbours = []
+    possible_neighbours << [row - 1, column] if cardinal
+    possible_neighbours << [row - 1, column + 1] if ordinal
+    possible_neighbours << [row, column + 1] if cardinal
+    possible_neighbours << [row + 1, column + 1] if ordinal
+    possible_neighbours << [row + 1, column] if cardinal
+    possible_neighbours << [row + 1, column - 1] if ordinal
+    possible_neighbours << [row, column - 1] if cardinal
+    possible_neighbours << [row - 1, column - 1] if ordinal
+
+    valid_neighbours = possible_neighbours.select { |r, c| includes_coords?(r, c) }
+
+    if block_given?
+      valid_neighbours.select { |r, c| yield cell(r, c) }
+    else
+      valid_neighbours
+    end
   end
 
   private
