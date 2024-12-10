@@ -35,6 +35,7 @@ class Grid
   def includes_coords?(row, column)
     row >= 0 && column >= 0 && row < @grid.length && column < @grid.first.length
   end
+
   alias_method(:within_grid?, :includes_coords?)
 
   # Returns the value stored at coordinates +(row, column)+ within the grid.
@@ -267,12 +268,32 @@ class Grid
   end
 
   # For the given position indicated by the +row+ and +column+ provided, returns
-  # an array of coordinates which are direct neighbours.
+  # an array of coordinates which are direct neighbours. The returned coordinates are in
+  # clockwise order starting directly above the given cell:
+  #     g = Grid.new([
+  #           [0, 1, 2, 3],
+  #           [4, 5, 6, 7],
+  #           [8, 9, 10, 11]
+  #         ])
+  #     g.neighbours(1, 1) # => [[0, 1], [1, 2], [2, 1], [1, 0]]
   #
-  # If the keyword argument +allow_diagonal: true+ is provided, diagonally accessible neighbours will also be included.
+  # If the keyword argument +allow_diagonal: true+ is provided, diagonally accessible neighbours will also be included:
+  #     g = Grid.new([
+  #           [0, 1, 2, 3],
+  #           [4, 5, 6, 7],
+  #           [8, 9, 10, 11]
+  #         ])
+  #     g.neighbours(1, 1) # => [[0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [1, 0], [0, 0]]
   #
   # If provided a block, each neighbour's cell value is yielded to the block, and only those neighbours for which the block
-  # returns a truthy value will be returned in the results.
+  # returns a truthy value will be returned in the results:
+  #     g = Grid.new([
+  #           [0, 1, 2, 3],
+  #           [4, 5, 6, 7],
+  #           [8, 9, 10, 11]
+  #         ])
+  #     g.neighbours(1, 2) { |cell| cell.even? } # => [[0, 2], [2, 2]]
+  #     g.neighbours(1, 2, allow_diagonal: true) { |cell| cell <= 5 } # => [[0, 2], [0, 3], [1, 1], [0, 1]]
   #
   # @param row [Integer] the row index of the starting cell
   # @param column [Integer] the column index of the starting cell
