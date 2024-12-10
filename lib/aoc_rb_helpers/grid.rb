@@ -100,11 +100,11 @@ class Grid
   # @return [Array<Grid>] an array containing four {Grid} objects, one in each possible rotation
   def all_rotations
     rotations = []
-    current_grid = self.dup
+    grid = self.dup
 
     4.times do
-      rotations << current_grid.dup
-      current_grid.rotate!
+      rotations << grid.dup
+      grid.rotate!
     end
 
     rotations
@@ -113,7 +113,7 @@ class Grid
   # Returns a new {Grid} as a copy of self.
   # @return [Grid] a copy of +self+
   def dup
-    self.class.new(@grid.map { |row| row.map { |cell| cell } })
+    self.class.new Marshal.load(Marshal.dump(@grid))
   end
 
   # Updates +self+ with a rotated grid and returns +self+.
