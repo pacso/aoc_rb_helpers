@@ -132,8 +132,8 @@ class Grid
   #
   # Returns an enumerator if no block is given
   #
+  # @return [Grid] if given a block, returns +self+ after calling block for each subgrid
   # @return [Enumerator] if no block is given.
-  # @return [self] after processing the provided block
   # @yield [subgrid] calls the provided block with each subgrid as a new {Grid} object
   # @yieldparam subgrid [Grid] a new {Grid} object containing a subgrid from the main grid
   def each_subgrid(rows, columns)
@@ -245,7 +245,8 @@ class Grid
   #   #   - The first item is the row index.
   #   #   - The second item is the column index.
   # @yieldparam value [Object] the value stored within the cell
-  # @return [self]
+  # @return [Grid] if given a block, returns +self+ after calling block for each cell
+  # @return [Enumerator] if no block is given
   def each_cell
     return to_enum(__callee__) unless block_given?
     @grid.each_with_index do |row, r_index|
@@ -256,8 +257,14 @@ class Grid
     self
   end
 
-  # TODO: document
-  def format_cells
+  # Calls the block, if given, with each cell value; replaces the cell in the grid with the block's return value:
+  #
+  # Returns a new Enumerator if no block given
+  # @yieldparam value [Object] the value stored within the cell
+  # @yieldreturn new_value [Object] the updated value to replace cell with
+  # @return [Grid] if given a block, returns +self+ after calling block for each cell
+  # @return [Enumerator] if no block is given
+  def each_cell!
     return to_enum(__callee__) unless block_given?
     @grid.each_with_index do |row, r_index|
       row.each_with_index do |cell, c_index|
@@ -266,6 +273,7 @@ class Grid
     end
     self
   end
+  alias_method :format_cells, :each_cell!
 
   # For the given position indicated by the +row+ and +column+ provided, returns
   # an array of coordinates which are direct neighbours. The returned coordinates are in
