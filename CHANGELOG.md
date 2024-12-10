@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - No unreleased changes!
 
+## [0.0.7]
+### Added
+- Grid#each_cell! - Iterates over each cell in the grid, calling the provided block with each cell and updating the cell with the returned value
+- Grid#neighbours - Accessor method to easily fetch the coordinates of cardinal and/or ordinal locations from the given coordinates
+
 ## [0.0.6]
 ### Added
 - AocInput#single_line - Strips newline characters from single line puzzle inputs
@@ -49,7 +54,8 @@ Initial release.
 ### Added
 - Created `AocInput` class with initial helper methods
 
-[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.6...HEAD
+[Unreleased]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.7...HEAD
+[0.0.7]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/pacso/aoc_rb_helpers/compare/v0.0.3...v0.0.4
