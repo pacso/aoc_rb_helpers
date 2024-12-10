@@ -255,6 +255,51 @@ class Grid
     self
   end
 
+  # TODO: document
+  def format_cells
+    return to_enum(__callee__) unless block_given?
+    @grid.each_with_index do |row, r_index|
+      row.each_with_index do |cell, c_index|
+        @grid[r_index][c_index] = yield cell
+      end
+    end
+    self
+  end
+
+  # For the given position indicated by the +row+ and +column+ provided, returns
+  # an array of coordinates which are direct neighbours.
+  #
+  # If the keyword argument +allow_diagonal: true+ is provided, diagonally accessible neighbours will also be included.
+  #
+  # If provided a block, each neighbour's cell value is yielded to the block, and only those neighbours for which the block
+  # returns a truthy value will be returned in the results.
+  #
+  # @param row [Integer] the row index of the starting cell
+  # @param column [Integer] the column index of the starting cell
+  # @param allow_diagonal [Boolean] permits diagonal neighbours when set to +true+
+  # @return [Array<Array<Integer>>] an array of coordinates. Each coordinate is a 2-item array where:
+  #   - The first item is the row index.
+  #   - The second item is the column index.
+  def neighbours(row, column, allow_diagonal: false)
+    possible_neighbours = []
+    possible_neighbours << [row - 1, column]
+    possible_neighbours << [row - 1, column + 1] if allow_diagonal
+    possible_neighbours << [row, column + 1]
+    possible_neighbours << [row + 1, column + 1] if allow_diagonal
+    possible_neighbours << [row + 1, column]
+    possible_neighbours << [row + 1, column - 1] if allow_diagonal
+    possible_neighbours << [row, column - 1]
+    possible_neighbours << [row - 1, column - 1] if allow_diagonal
+
+    valid_neighbours = possible_neighbours.select { |r, c| includes_coords?(r, c) }
+
+    if block_given?
+      valid_neighbours.select { |r, c| yield cell(r, c) }
+    else
+      valid_neighbours
+    end
+  end
+
   private
 
   def locate_value(element)
