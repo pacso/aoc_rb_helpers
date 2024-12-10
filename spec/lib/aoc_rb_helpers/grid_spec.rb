@@ -321,7 +321,11 @@ RSpec.describe Grid do
     end
 
     it "returns diagonal neighbour coords when requested" do
-      expect(grid.neighbours(*[2, 2], allow_diagonal: true)).to eq [[1, 2], [1, 3], [2, 3], [3, 3], [3, 2], [3, 1], [2, 1], [1, 1]]
+      expect(grid.neighbours(*[2, 2], ordinal: true)).to eq [[1, 2], [1, 3], [2, 3], [3, 3], [3, 2], [3, 1], [2, 1], [1, 1]]
+    end
+
+    it "returns only diagonal neighbours when requested" do
+      expect(grid.neighbours(*[2, 2], cardinal: false, ordinal: true)).to eq [[1, 3], [3, 3], [3, 1], [1, 1]]
     end
 
     it "excludes coordinates outside the grid" do
@@ -338,7 +342,7 @@ RSpec.describe Grid do
     end
 
     it "filters diagonal neighbours also" do
-      expect(grid.neighbours(*[1, 1], allow_diagonal: true) { |cell| cell.even? }).to eq [[0, 1], [0, 2], [2, 2], [2, 0], [1, 0]]
+      expect(grid.neighbours(*[1, 1], ordinal: true) { |cell| cell.even? }).to eq [[0, 1], [0, 2], [2, 2], [2, 0], [1, 0]]
     end
   end
 end

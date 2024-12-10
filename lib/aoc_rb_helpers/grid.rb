@@ -297,20 +297,21 @@ class Grid
   #
   # @param row [Integer] the row index of the starting cell
   # @param column [Integer] the column index of the starting cell
-  # @param allow_diagonal [Boolean] permits diagonal neighbours when set to +true+
+  # @param cardinal [Boolean] permits the direct north/east/south/west directions
+  # @param ordinal [Boolean] permits diagonal north-east/south-east/south-west/north-west directions
   # @return [Array<Array<Integer>>] an array of coordinates. Each coordinate is a 2-item array where:
   #   - The first item is the row index.
   #   - The second item is the column index.
-  def neighbours(row, column, allow_diagonal: false)
+  def neighbours(row, column, cardinal: true, ordinal: false)
     possible_neighbours = []
-    possible_neighbours << [row - 1, column]
-    possible_neighbours << [row - 1, column + 1] if allow_diagonal
-    possible_neighbours << [row, column + 1]
-    possible_neighbours << [row + 1, column + 1] if allow_diagonal
-    possible_neighbours << [row + 1, column]
-    possible_neighbours << [row + 1, column - 1] if allow_diagonal
-    possible_neighbours << [row, column - 1]
-    possible_neighbours << [row - 1, column - 1] if allow_diagonal
+    possible_neighbours << [row - 1, column] if cardinal
+    possible_neighbours << [row - 1, column + 1] if ordinal
+    possible_neighbours << [row, column + 1] if cardinal
+    possible_neighbours << [row + 1, column + 1] if ordinal
+    possible_neighbours << [row + 1, column] if cardinal
+    possible_neighbours << [row + 1, column - 1] if ordinal
+    possible_neighbours << [row, column - 1] if cardinal
+    possible_neighbours << [row - 1, column - 1] if ordinal
 
     valid_neighbours = possible_neighbours.select { |r, c| includes_coords?(r, c) }
 
