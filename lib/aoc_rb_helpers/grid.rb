@@ -82,6 +82,7 @@ class Grid
     return false unless other.is_a?(self.class)
     @grid == other.instance_variable_get(:@grid)
   end
+  alias_method :eql?, :==
 
   # Returns +true+ if the other grid can be rotated into an orientation where it is equal to +self+, +false+ otherwise.
   #
@@ -328,6 +329,39 @@ class Grid
     else
       valid_neighbours
     end
+  end
+
+  def regions
+    regions = Set.new
+    cells = all_cells
+    until cells.empty?
+      cell = cells.first
+      cells.delete(cell)
+      region = Region.new(contiguous_cells(*cell))
+      region.each_cell do |coords|
+        cells.delete(coords)
+      end
+      regions << region
+    end
+    regions
+  end
+
+  def all_cells
+    Set.new(each_cell.map { |(y, x), _value| [y, x] })
+  end
+
+  def contiguous_cells(row, column, cells = Set.new)
+    value = cell(row, column)
+    cells.add([row, column])
+    neighbours = neighbours(row, column) { |nv| value == nv }
+    neighbours.each do |neighbour|
+      contiguous_cells(*neighbour, cells) unless cells.include?(neighbour)
+    end
+    cells
+  end
+
+  def hash
+    all_cells.sort.to_a.unshift(self.class).hash
   end
 
   private
