@@ -276,6 +276,48 @@ class Grid
   end
   alias_method :format_cells, :each_cell!
 
+  # Iterates over each row in the grid.
+  #
+  # When a block is given, passes each row to the block; returns +self+:
+  #     g = Grid.new([
+  #           ["a", "b", "c"],
+  #           ["d", "e", "f"]
+  #         ])
+  #     g.each_row { |row| puts row.join }
+  #
+  # Output:
+  #     abc
+  #     def
+  #
+  # When no block is given, returns a new Enumerator.
+  #
+  # @yieldparam row [Array<Object>] an array containing the cells of the row
+  # @return [Grid] if given a block, returns +self+ after calling block for each row
+  # @return [Enumerator] if no block is given
+  def each_row
+    return to_enum(__callee__) unless block_given?
+    @grid.each do |row|
+      yield row
+    end
+    self
+  end
+
+  # Calls the block, if given, with each row in the grid; replaces the row in the grid with the block's return value.
+  #
+  # Returns a new Enumerator if no block given.
+  #
+  # @yieldparam row [Array<Object>] an array containing the cells of the row
+  # @return [Grid] if given a block, returns +self+ after calling block for each row
+  # @return [Enumerator] if no block is given
+  def each_row!
+    return to_enum(__callee__) unless block_given?
+    @grid.each_with_index do |row, index|
+      @grid[index] = yield row
+    end
+    self
+  end
+  alias_method :format_rows, :each_row!
+
   # For the given position indicated by the +row+ and +column+ provided, returns
   # an array of coordinates which are direct neighbours. The returned coordinates are in
   # clockwise order starting directly above the given cell:
