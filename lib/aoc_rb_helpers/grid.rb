@@ -406,6 +406,14 @@ class Grid
     all_cells.sort.to_a.unshift(self.class).hash
   end
 
+  # Outputs the grid to STDOUT
+  def print
+    @grid.each do |row|
+      puts row.join
+    end
+    puts ""
+  end
+
   private
 
   def locate_value(element)
