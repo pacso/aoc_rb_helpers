@@ -9,6 +9,17 @@ class Grid
     self.new(input.lines(chomp: true).map(&:chars))
   end
 
+  # Returns a new {Grid} initialised with the given dimensions.
+  #
+  # By default, grid cells are initialised to +nil+, but this can be overridden by providing a +cell_default+.
+  #
+  # @param rows [Integer] the height of the grid
+  # @param columns [Integer] the width of the grid
+  # @param cell_default [Object] the default value for each cell in the grid
+  def self.with_dimensions(rows, columns, cell_default = nil)
+    self.new(Array.new(rows) { Array.new(columns, cell_default) })
+  end
+
   # Returns a new {Grid} initialized with the provided two-dimensional array.
   #
   # @param grid [Array<Array<Object>>] the grid in a two-dimensional array

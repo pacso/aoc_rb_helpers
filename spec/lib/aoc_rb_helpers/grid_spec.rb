@@ -20,6 +20,26 @@ RSpec.describe Grid do
     end
   end
 
+  describe ".with_dimensions" do
+    it "returns a new Grid" do
+      expect(described_class.with_dimensions(2, 3)).to be_an_instance_of Grid
+    end
+
+    it "sets the grid dimensions correctly" do
+      grid = described_class.with_dimensions(2, 3)
+      expect(grid.instance_variable_get(:@grid).length).to eq 2
+      expect(grid.instance_variable_get(:@grid).first.length).to eq 3
+    end
+
+    it "defaults each cell to `nil`" do
+      expect(described_class.with_dimensions(2, 3).instance_variable_get(:@grid).flatten.all?(&:nil?)).to be true
+    end
+
+    it "can override the default cell value" do
+      expect(described_class.with_dimensions(2, 3, ".").instance_variable_get(:@grid).flatten.all? { |cell| cell == "." }).to be true
+    end
+  end
+
   describe "#cell(y, x)" do
     let(:grid) { described_class.from_input(input_text) }
 
