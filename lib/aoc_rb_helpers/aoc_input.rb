@@ -27,7 +27,7 @@ class AocInput
   # @return [AocInput] self
   def single_line
     can_call?(:single_line)
-    @data = data.chomp('')
+    @data = data.gsub("\n", "")
     revoke(:multiple_lines)
     revoke(:single_line)
     self

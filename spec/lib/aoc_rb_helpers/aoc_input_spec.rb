@@ -36,7 +36,9 @@ RSpec.describe AocInput do
     end
     let(:multi_newline_input) do
       <<~EOF
-        the-only-line
+        a-single-line-
+        split-over-
+        many-lines
 
 
       EOF
@@ -52,8 +54,8 @@ RSpec.describe AocInput do
     it "strips multiple newline characters" do
       aoc_input = described_class.new(multi_newline_input)
       expect { aoc_input.single_line }.to change { aoc_input.data }
-                                            .from("the-only-line\n\n\n")
-                                            .to("the-only-line")
+                                            .from("a-single-line-\nsplit-over-\nmany-lines\n\n\n")
+                                            .to("a-single-line-split-over-many-lines")
     end
 
     it "returns the aoc_input instance" do
