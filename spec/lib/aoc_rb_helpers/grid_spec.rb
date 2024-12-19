@@ -327,6 +327,36 @@ RSpec.describe Grid do
     end
   end
 
+  describe "each_row" do
+    let(:grid) { described_class.new([%w[a b], %w[c d]]) }
+
+    it "returns an enumerator when no block is given" do
+      r = grid.each_row
+      expect(r).to be_an Enumerator
+      expect(r.next).to eq %w[a b]
+    end
+
+    it "doesn't change the grid when modifying the row in a block" do
+      grid.each_row { |row| row << "test" }
+      expect(grid.instance_variable_get(:@grid).first).not_to include "test"
+    end
+  end
+
+  describe "each_row!" do
+    let(:grid) { described_class.new([%w[a b], %w[c d]]) }
+
+    it "returns an enumerator when no block is given" do
+      r = grid.each_row!
+      expect(r).to be_an Enumerator
+      expect(r.next).to eq %w[a b]
+    end
+
+    it "changes the grid when modifying the row in a block" do
+      grid.each_row! { |row| row << "test" }
+      expect(grid.instance_variable_get(:@grid).first).to include "test"
+    end
+  end
+
   describe "#neighbours" do
     let(:grid) { described_class.new([
                                        [7, 4, 2, 4, 7],

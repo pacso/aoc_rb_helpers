@@ -287,7 +287,7 @@ class Grid
   end
   alias_method :format_cells, :each_cell!
 
-  # Iterates over each row in the grid.
+  # Iterates over each row in the grid, without modifying the grid.
   #
   # When a block is given, passes each row to the block; returns +self+:
   #     g = Grid.new([
@@ -308,7 +308,7 @@ class Grid
   def each_row
     return to_enum(__callee__) unless block_given?
     @grid.each do |row|
-      yield row
+      yield Marshal.load(Marshal.dump(row))
     end
     self
   end
