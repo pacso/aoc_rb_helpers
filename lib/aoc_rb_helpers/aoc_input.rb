@@ -121,6 +121,12 @@ class AocInput
     Grid.from_input(@raw_input)
   end
 
+  # Returns a new +Map+ object from the parsed input
+  # @return [Map] the new map
+  def to_map
+    Map.from_input(@raw_input)
+  end
+
   # Returns a new +AocInput+ for each section of the raw input, split by the given delimiter.
   # @param delimiter [String] the string used to split sections
   # @return [Array<AocInput>] an array of new AocInput instances initialised with each section of the raw input from +self+
