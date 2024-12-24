@@ -33,23 +33,37 @@ class Map < Grid
     unvisited = Hash.new(INFINITY)
     visited = Hash.new(false)
     distances = Hash.new(INFINITY)
+    path = Hash.new { |h, k| h[k] = [] }
+
     unvisited[from] = 0
     distances[from] = 0
+    path[from] = [from]
 
-    current = unvisited.key(unvisited.values.min)
     until to.first.is_a?(Array) ? to.any? { |dest| visited[dest] } : visited[to]
       raise RuntimeError, "route blocked" if unvisited.empty?
       current = unvisited.key(unvisited.values.min)
       unvisited_neighbours = neighbours_of(current).reject { |n, _c| visited[n] }
 
       unvisited_neighbours.each do |neighbour, cost|
-        unvisited[neighbour] = [unvisited[neighbour], unvisited[current] + cost].min
+        new_cost = distances[current] + cost
+
+        if new_cost < distances[neighbour]
+          distances[neighbour] = new_cost
+          unvisited[neighbour] = new_cost
+          path[neighbour] = path[current] + [neighbour]
+        end
       end
+
       visited[current] = true
       distances[current] = unvisited[current]
       unvisited.delete(current)
     end
-    distances[current]
+
+    if to.first.is_a?(Array)
+      path[to.select { |dest| visited[dest] }.first]
+    else
+      path[to]
+    end
   end
 
   def shortest_paths_dijkstra(from, to)

@@ -20,11 +20,39 @@ class Grid
     self.new(Array.new(rows) { Array.new(columns, cell_default) })
   end
 
+  # Returns the manhattan distance between two coordinates.
+  #
+  # @param from_coords [Array<Integer>] a 2-item array for the start cell, where:
+  #   - The first item is the row index.
+  #   - The second item is the column index.
+  # @param to_coords [Array<Integer>] a 2-item array for the destination cell, where:
+  #   #   - The first item is the row index.
+  #   #   - The second item is the column index.
+  # @return [Integer] the manhattan distance between the two cells
+  def self.manhattan_distance(from_coords, to_coords)
+    ay, ax = from_coords
+    by, bx = to_coords
+    (ay - by).abs + (ax - bx).abs
+  end
+
   # Returns a new {Grid} initialized with the provided two-dimensional array.
   #
   # @param grid [Array<Array<Object>>] the grid in a two-dimensional array
   def initialize(grid)
     @grid = grid
+  end
+
+  def grid
+    @grid
+  end
+  alias_method :rows, :grid
+
+  def height
+    @grid.length
+  end
+
+  def width
+    @grid.first.length
   end
 
   # Returns +true+ if the provided coordinates exceed the bounds of the grid; +false+ otherwise.
